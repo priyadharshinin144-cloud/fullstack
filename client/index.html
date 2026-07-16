@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Meeting Minutes Generator - Welcome</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(180deg, #f0f7ff 0%, #dbf0ff 40%, #ffffff 100%);
+            --primary-blue: #1d4ed8;
+            --accent-blue: #3b82f6;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            
+            /* High-fidelity Claymorphic & Glassmorphic Shadows */
+            --clay-shadow: 0 14px 28px rgba(37, 99, 235, 0.08), inset -4px -4px 12px rgba(0,0,0,0.03), inset 4px 4px 12px #ffffff;
+            --btn-3d-shadow: 0 6px 0px #1e40af, 0 12px 24px rgba(29, 78, 216, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: #090d16;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Mobile Viewport Shell */
+        .phone-container {
+            width: 412px;
+            height: 892px;
+            background: var(--bg-gradient);
+            border-radius: 44px;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 16px 24px;
+        }
+
+        .phone-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Status Bar Layout */
+        .status-bar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 6px;
+        }
+
+        /* WELCOME SCREEN */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .top-logo-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            height: 50px;
+        }
+
+        .top-mic-icon {
+            width: 24px;
+            height: 36px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231d4ed8'%3E%3Cpath d='M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+        }
+
+        .top-robot-icon {
+            width: 42px;
+            height: 42px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: var(--clay-shadow);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231d4ed8'%3E%3Cpath d='M12 2a2 2 0 0 1 2 2c0 .28-.06.53-.16.76C16.73 5.82 19 8.65 19 12v1h1a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1v1a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-1H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h1v-1c0-3.35 2.27-6.18 5.16-7.24C10.06 4.53 10 4.28 10 4a2 2 0 0 1 2-2M8.5 11a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm7 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM12 16H8v1h4v-1z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 24px;
+        }
+
+        .main-heading {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            text-align: center;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .main-heading span {
+            color: var(--accent-blue);
+            display: block;
+        }
+
+        .dots-indicator {
+            display: flex;
+            gap: 5px;
+            margin: 16px 0;
+        }
+
+        .dots-indicator .dot {
+            width: 6px;
+            height: 4px;
+            background-color: var(--accent-blue);
+            border-radius: 2px;
+            opacity: 0.2;
+        }
+
+        .dots-indicator .dot.active {
+            width: 18px;
+            opacity: 0.85;
+        }
+
+        .sub-heading {
+            font-size: 16px;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .sub-heading strong {
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        .illustration-space {
+            position: relative;
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wave-backdrop {
+            position: absolute;
+            width: 120%;
+            height: 50%;
+            opacity: 0.35;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='none' stroke='%233b82f6' stroke-width='4' d='M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,117.3C960,107,1056,149,1152,154.7C1248,160,1344,128,1392,112L1440,96'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+
+        .robot-centerpiece {
+            width: 170px;
+            height: 170px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 20px 45px rgba(37, 99, 235, 0.16), var(--clay-shadow);
+            border: 4px solid #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            position: relative;
+        }
+
+        .robot-vector {
+            width: 110px;
+            height: 110px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='20' r='3' fill='%233b82f6'/%3E%3Cline x1='50' y1='23' x2='50' y2='34' stroke='%233b82f6' stroke-width='3'/%3E%3Crect x='24' y='34' width='52' height='42' rx='20' fill='%23f8fafc' stroke='%23e2e8f0' stroke-width='2'/%3E%3Crect x='30' y='40' width='40' height='22' rx='11' fill='%230f172a'/%3E%3Ccircle cx='42' cy='51' r='4' fill='%2338bdf8'/%3E%3Ccircle cx='58' cy='51' r='4' fill='%2338bdf8'/%3E%3Cpath d='M44 57 Q50 60 56 57' stroke='%2338bdf8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3Crect x='18' y='46' width='6' height='16' rx='3' fill='%233b82f6'/%3E%3Crect x='76' y='46' width='6' height='16' rx='3' fill='%233b82f6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            margin-top: -10px;
+        }
+
+        .minutes-sheet {
+            position: absolute;
+            bottom: -8px;
+            width: 86px;
+            height: 76px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .sheet-title {
+            font-size: 8px;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-dark);
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 4px;
+        }
+
+        .sheet-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sheet-check {
+            width: 8px;
+            height: 8px;
+            background-color: #3b82f6;
+            border-radius: 2px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+            background-size: 6px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .sheet-line {
+            height: 4px;
+            background-color: #e2e8f0;
+            border-radius: 2px;
+            flex-grow: 1;
+        }
+
+        .floating-feature {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: var(--clay-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            z-index: 6;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .f-icon {
+            width: 26px;
+            height: 26px;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+        }
+
+        .floating-feature span {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .p-rec { top: 12%; left: -4%; transform: rotate(-6deg); }
+        .p-trans { top: 12%; right: -4%; transform: rotate(6deg); }
+        .p-sched { bottom: 12%; left: -4%; transform: rotate(-4deg); }
+        .p-sum { bottom: 12%; right: -4%; transform: rotate(4deg); }
+
+        .i-rec { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'%3E%3Cpath d='M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1 7h2v-2h-2v2zm5-10h1.7c0 3-2.54 5.1-5.3 5.1S7.3 14 7.3 11H9c0 2.5 2 4 3 4s3-1.5 3-4z'/%3E%3C/svg%3E"); }
+        .i-trans { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233b82f6'%3E%3Cpath d='M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z'/%3E%3C/svg%3E"); }
+        .i-sched { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563eb'%3E%3Cpath d='M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm-5-7H7v2h7v-2z'/%3E%3C/svg%3E"); }
+        .i-sum { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233b82f6'%3E%3Cpath d='M12 2a2 2 0 0 1 2 2c0 .28-.06.53-.16.76C16.73 5.82 19 8.65 19 12v1h1a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1v1a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-1H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h1v-1c0-3.35 2.27-6.18 5.16-7.24C10.06 4.53 10 4.28 10 4a2 2 0 0 1 2-2z'/%3E%3C/svg%3E"); }
+
+        .floating-feature:hover {
+            transform: translateY(-6px) scale(1.08) rotate(0deg);
+            background: #ffffff;
+            box-shadow: 0 16px 32px rgba(37, 99, 235, 0.15);
+        }
+
+        .action-tray {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+            border: none;
+            border-radius: 16px;
+            padding: 18px;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: var(--btn-3d-shadow);
+            transform: translateY(-4px);
+            transition: all 0.1s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 0px #1e40af, 0 10px 16px rgba(29, 78, 216, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(2px);
+            box-shadow: 0 0px 0px #1e40af, 0 4px 8px rgba(29, 78, 216, 0.3);
+        }
+
+        .footer-tag {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .footer-tag::before, .footer-tag::after {
+            content: '✦';
+            color: var(--accent-blue);
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+        <div class="status-bar">
+            <div>9:41</div>
+            <div class="status-icons">
+                <svg width="17" height="11" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.4c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.9-1.9C9.13 19.54 10.51 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9z"/></svg>
+                <svg width="15" height="11" viewBox="0 0 24 24"><path d="M12 21l-12-18h24z"/></svg>
+                <svg width="18" height="11" viewBox="0 0 24 24"><rect x="2" y="4" width="16" height="16" rx="2"/><path d="M22 9v6"/></svg>
+            </div>
+        </div>
+
+        <div class="welcome-screen">
+            <div class="top-logo-group">
+                <div class="top-mic-icon"></div>
+                <div class="top-robot-icon"></div>
+            </div>
+
+            <h1 class="main-heading">
+                Smart Meeting <span>Minutes Generator</span>
+            </h1>
+
+            <div class="dots-indicator">
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+            </div>
+
+            <p class="sub-heading">
+                Convert Meetings into<br>Organized Minutes with <strong>AI</strong>
+            </p>
+
+            <div class="illustration-space">
+                <div class="wave-backdrop"></div>
+
+                <div class="floating-feature p-rec">
+                    <div class="f-icon i-rec"></div>
+                    <span>Recording</span>
+                </div>
+
+                <div class="floating-feature p-trans">
+                    <div class="f-icon i-trans"></div>
+                    <span>Transcription</span>
+                </div>
+
+                <div class="robot-centerpiece">
+                    <div class="robot-vector"></div>
+                    <div class="minutes-sheet">
+                        <div class="sheet-title">Meeting Minutes</div>
+                        <div class="sheet-row"><div class="sheet-check"></div><div class="sheet-line"></div></div>
+                        <div class="sheet-row"><div class="sheet-check"></div><div class="sheet-line"></div></div>
+                        <div class="sheet-row"><div class="sheet-check"></div><div class="sheet-line"></div></div>
+                    </div>
+                </div>
+
+                <div class="floating-feature p-sched">
+                    <div class="f-icon i-sched"></div>
+                    <span>Schedule</span>
+                </div>
+
+                <div class="floating-feature p-sum">
+                    <div class="f-icon i-sum"></div>
+                    <span>AI Summary</span>
+                </div>
+            </div>
+
+            <div class="action-tray">
+                <button class="btn-primary" onclick="window.location.href='second.html'">🚀 Get Started</button>
+            </div>
+
+            <div class="footer-tag">Powered by AI Technology</div>
+        </div>
+    </div>
+
+</body>
+</html>

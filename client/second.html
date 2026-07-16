@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Meeting Minutes Generator - Complete UI</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(180deg, #f0f7ff 0%, #dbf0ff 40%, #ffffff 100%);
+            --primary-blue: #1d4ed8;
+            --accent-blue: #3b82f6;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            
+            /* High-fidelity Claymorphic & Glassmorphic Shadows */
+            --clay-shadow: 0 14px 28px rgba(37, 99, 235, 0.08), inset -4px -4px 12px rgba(0,0,0,0.03), inset 4px 4px 12px #ffffff;
+            --btn-3d-shadow: 0 6px 0px #1e40af, 0 12px 24px rgba(29, 78, 216, 0.3);
+            --action-arrow-shadow: 0 4px 10px rgba(59, 130, 246, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: #090d16;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        /* Mobile Viewport Shell */
+        .phone-container {
+            width: 412px;
+            height: 892px;
+            background: var(--bg-gradient);
+            border-radius: 44px;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 16px 24px;
+        }
+
+        /* Hide Scrollbars for crisp App presentation */
+        .phone-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Status Bar Layout */
+        .status-bar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 6px;
+        }
+
+        /* ==================== PAGE 1: WELCOME SCREEN ==================== */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .top-logo-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            height: 50px;
+        }
+
+        .top-mic-icon {
+            width: 24px;
+            height: 36px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231d4ed8'%3E%3Cpath d='M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+        }
+
+        .top-robot-icon {
+            width: 42px;
+            height: 42px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: var(--clay-shadow);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231d4ed8'%3E%3Cpath d='M12 2a2 2 0 0 1 2 2c0 .28-.06.53-.16.76C16.73 5.82 19 8.65 19 12v1h1a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1v1a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-1H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h1v-1c0-3.35 2.27-6.18 5.16-7.24C10.06 4.53 10 4.28 10 4a2 2 0 0 1 2-2M8.5 11a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm7 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM12 16H8v1h4v-1z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 24px;
+        }
+
+        .main-heading {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            text-align: center;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .main-heading span {
+            color: var(--accent-blue);
+            display: block;
+        }
+
+        .dots-indicator {
+            display: flex;
+            gap: 5px;
+            margin: 16px 0;
+        }
+
+        .dots-indicator .dot {
+            width: 6px;
+            height: 4px;
+            background-color: var(--accent-blue);
+            border-radius: 2px;
+            opacity: 0.2;
+        }
+
+        .dots-indicator .dot.active {
+            width: 18px;
+            opacity: 0.85;
+        }
+
+        .sub-heading {
+            font-size: 16px;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .sub-heading strong {
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        /* Center Showcase Arena */
+        .illustration-space {
+            position: relative;
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wave-backdrop {
+            position: absolute;
+            width: 120%;
+            height: 50%;
+            opacity: 0.35;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='none' stroke='%233b82f6' stroke-width='4' d='M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,117.3C960,107,1056,149,1152,154.7C1248,160,1344,128,1392,112L1440,96'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+
+        .robot-centerpiece {
+            width: 170px;
+            height: 170px;
+            background: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 20px 45px rgba(37, 99, 235, 0.16), var(--clay-shadow);
+            border: 4px solid #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            position: relative;
+        }
+
+        .robot-vector {
+            width: 110px;
+            height: 110px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='20' r='3' fill='%233b82f6'/%3E%3Cline x1='50' y1='23' x2='50' y2='34' stroke='%233b82f6' stroke-width='3'/%3E%3Crect x='24' y='34' width='52' height='42' rx='20' fill='%23f8fafc' stroke='%23e2e8f0' stroke-width='2'/%3E%3Crect x='30' y='40' width='40' height='22' rx='11' fill='%230f172a'/%3E%3Ccircle cx='42' cy='51' r='4' fill='%2338bdf8'/%3E%3Ccircle cx='58' cy='51' r='4' fill='%2338bdf8'/%3E%3Cpath d='M44 57 Q50 60 56 57' stroke='%2338bdf8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3Crect x='18' y='46' width='6' height='16' rx='3' fill='%233b82f6'/%3E%3Crect x='76' y='46' width='6' height='16' rx='3' fill='%233b82f6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            margin-top: -10px;
+        }
+
+        .minutes-sheet {
+            position: absolute;
+            bottom: -8px;
+            width: 86px;
+            height: 76px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+            border: 1px solid #e2e8f0;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .sheet-title {
+            font-size: 8px;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-dark);
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 4px;
+        }
+
+        .sheet-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sheet-check {
+            width: 8px;
+            height: 8px;
+            background-color: #3b82f6;
+            border-radius: 2px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+            background-size: 6px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .sheet-line {
+            height: 4px;
+            background-color: #e2e8f0;
+            border-radius: 2px;
+            flex-grow: 1;
+        }
+
+        /* Floating Cards Design Layout */
+        .floating-feature {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: var(--clay-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            z-index: 6;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .f-icon {
+            width: 26px;
+            height: 26px;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+        }
+
+        .floating-feature span {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* Positions matching Image 1 spatial structure */
+        .p-rec { top: 12%; left: -4%; transform: rotate(-6deg); }
+        .p-trans { top: 12%; right: -4%; transform: rotate(6deg); }
+        .p-sched { bottom: 12%; left: -4%; transform: rotate(-4deg); }
+        .p-sum { bottom: 12%; right: -4%; transform: rotate(4deg); }
+
+        .i-rec { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'%3E%3Cpath d='M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1 7h2v-2h-2v2zm5-10h1.7c0 3-2.54 5.1-5.3 5.1S7.3 14 7.3 11H9c0 2.5 2 4 3 4s3-1.5 3-4z'/%3E%3C/svg%3E"); }
+        .i-trans { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233b82f6'%3E%3Cpath d='M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z'/%3E%3C/svg%3E"); }
+        .i-sched { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563eb'%3E%3Cpath d='M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm-5-7H7v2h7v-2z'/%3E%3C/svg%3E"); }
+        .i-sum { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233b82f6'%3E%3Cpath d='M12 2a2 2 0 0 1 2 2c0 .28-.06.53-.16.76C16.73 5.82 19 8.65 19 12v1h1a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-1v1a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3v-1H4a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h1v-1c0-3.35 2.27-6.18 5.16-7.24C10.06 4.53 10 4.28 10 4a2 2 0 0 1 2-2z'/%3E%3C/svg%3E"); }
+
+        .floating-feature:hover {
+            transform: translateY(-6px) scale(1.08) rotate(0deg);
+            background: #ffffff;
+            box-shadow: 0 16px 32px rgba(37, 99, 235, 0.15);
+        }
+
+        /* 3D Action Triggers */
+        .action-tray {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+            border: none;
+            border-radius: 16px;
+            padding: 18px;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: var(--btn-3d-shadow);
+            transform: translateY(-4px);
+            transition: all 0.1s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 0px #1e40af, 0 10px 16px rgba(29, 78, 216, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(2px);
+            box-shadow: 0 0px 0px #1e40af, 0 4px 8px rgba(29, 78, 216, 0.3);
+        }
+
+        .btn-secondary {
+            width: 100%;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px;
+            color: var(--primary-blue);
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: var(--secondary-btn-shadow);
+            transform: translateY(-3px);
+            transition: all 0.1s ease-in-out;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 0px #cbd5e1, 0 6px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(1px);
+            box-shadow: 0 0px 0px #cbd5e1, 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .info-icon {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .footer-tag {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .footer-tag::before, .footer-tag::after {
+            content: '✦';
+            color: var(--accent-blue);
+            font-size: 10px;
+        }
+
+
+        /* ==================== PAGE 2: DASHBOARD SCREEN ==================== */
+        .dashboard-screen {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        /* Top Navigation Header Row */
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .menu-burger {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .menu-burger div {
+            width: 24px;
+            height: 3px;
+            background-color: var(--text-dark);
+            border-radius: 2px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .notif-bell {
+            width: 24px;
+            height: 24px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230f172a'%3E%3Cpath d='M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 4.36 6 6.92 6 10v5l-2 2v1h16v-1l-2-2z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .notif-dot {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 6px;
+            height: 6px;
+            background-color: #ef4444;
+            border-radius: 50%;
+        }
+
+        .profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 4px 12px 4px 4px;
+            border-radius: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+
+        .profile-img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ea580c'%3E%3Ccircle cx='12' cy='8' r='4'/%3E%3Cpath d='M12 14c-6.1 0-7 4-7 4h14s-.9-4-7-4z'/%3E%3C/svg%3E");
+            background-color: #ffedd5;
+            background-size: cover;
+        }
+
+        .profile-name {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* Welcome Text block */
+        .welcome-block {
+            margin-bottom: 20px;
+        }
+
+        .welcome-block h2 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .welcome-block h2 span {
+            color: var(--accent-blue);
+        }
+
+        .welcome-block p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        /* Hero Split Panel Asset Row */
+        .hero-dashboard-graphic {
+            background: white;
+            border-radius: 24px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--clay-shadow);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dash-hero-left {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 2;
+        }
+
+        .blue-mic-clay {
+            width: 55px;
+            height: 55px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231d4ed8'%3E%3Cpath d='M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+
+        .dash-hero-right {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        /* Monthly Stat Metrics Layout Grid */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: var(--clay-shadow);
+        }
+
+        .stat-icon-wrapper {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .stat-card.meetings .stat-icon-wrapper { background-color: #eff6ff; fill: #3b82f6; }
+        .stat-card.hours .stat-icon-wrapper { background-color: #f0fdf4; fill: #22c55e; }
+        .stat-card.accuracy .stat-icon-wrapper { background-color: #faf5ff; fill: #a855f7; }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .stat-value span {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-left: 2px;
+        }
+
+        .stat-label {
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-top: 4px;
+        }
+
+        .stat-period {
+            font-size: 8px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            font-weight: 500;
+        }
+
+        /* 6-Grid Core Workspace Navigator */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .grid-item {
+            background: #ffffff;
+            border-radius: 22px;
+            padding: 14px 12px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: var(--clay-shadow);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .grid-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+
+        /* Specific Brand Color Grids matched from Image 2 */
+        .item-new-meeting .grid-icon { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); fill: white; }
+        .item-prev-meetings .grid-icon { background: linear-gradient(135deg, #22c55e 0%, #15803d 100%); fill: white; }
+        .item-record .grid-icon { background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%); fill: white; }
+        .item-ai .grid-icon { background: white; border: 1px solid #e2e8f0; }
+        .item-gen .grid-icon { background: white; border: 1px solid #e2e8f0; fill: #2563eb; }
+        .item-analytics .grid-icon { background: white; border: 1px solid #e2e8f0; }
+
+        .grid-item h3 {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-dark);
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        .grid-item p {
+            font-size: 8.5px;
+            color: var(--text-muted);
+            line-height: 1.3;
+            font-weight: 500;
+        }
+
+        /* Action circular arrow layout component inside grids */
+        .grid-arrow-btn {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background-color: #f8fafc;
+            box-shadow: var(--action-arrow-shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: auto;
+            align-self: flex-end;
+            border: 1px solid #f1f5f9;
+        }
+
+        .grid-arrow-btn svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        .item-new-meeting .grid-arrow-btn svg { fill: #1d4ed8; }
+        .item-prev-meetings .grid-arrow-btn svg { fill: #15803d; }
+        .item-record .grid-arrow-btn svg { fill: #7e22ce; }
+        .item-ai .grid-arrow-btn svg { fill: #1d4ed8; }
+        .item-gen .grid-arrow-btn svg { fill: #1d4ed8; }
+        .item-analytics .grid-arrow-btn svg { fill: #7e22ce; }
+
+        /* Hover animations for Grid Elements */
+        .grid-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+        }
+
+        /* Bottom Tab Navigator Row */
+        .tab-navigator {
+            width: calc(100% + 48px);
+            margin-left: -24px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            color: var(--text-muted);
+            fill: var(--text-muted);
+        }
+
+        .tab-item.active {
+            color: var(--primary-blue);
+            fill: var(--primary-blue);
+        }
+
+        .tab-item svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .tab-item span {
+            font-size: 10px;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+        <div class="status-bar">
+            <div>9:41</div>
+            <div class="status-icons">
+                <svg width="17" height="11" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.4c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.9-1.9C9.13 19.54 10.51 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9z"/></svg>
+                <svg width="15" height="11" viewBox="0 0 24 24"><path d="M12 21l-12-18h24z"/></svg>
+                <svg width="18" height="11" viewBox="0 0 24 24"><rect x="2" y="4" width="16" height="16" rx="2"/><path d="M22 9v6"/></svg>
+            </div>
+        </div>
+
+        <div class="welcome-screen">
+            <div class="top-logo-group">
+                <div class="top-mic-icon"></div>
+                <div class="top-robot-icon"></div>
+            </div>
+
+            <h1 class="main-heading">
+                Smart Meeting <span>Minutes Generator</span>
+            </h1>
+
+            <div class="dots-indicator">
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+            </div>
+
+            <p class="sub-heading">
+                Convert Meetings into<br>Organized Minutes with <strong>AI</strong>
+            </p>
+
+            <div class="illustration-space">
+                <div class="wave-backdrop"></div>
+
+                <div class="floating-feature p-rec">
+                    <div class="f-icon i-rec"></div>
+                    <span>Recording</span>
+                </div>
+
+                <div class="floating-feature p-trans">
+                    <div class="f-icon i-trans"></div>
+                    <span>Transcription</span>
+                </div>
+
+                <div class="robot-centerpiece">
+                    <div class="robot-vector"></div>
+                    <div class="minutes-sheet">
+                        <div class="sheet-title">Meeting Minutes</div>
+                        <div class="sheet-row"><div class="sheet-check"></div><div class="sheet-line"></div></div>
+                        <div class="sheet-row"><div class="sheet-check"></div><div class="sheet-line"></div></div>
+                        <div class="sheet-row"><div class="sheet-check"></div><div class="sheet-line"></div></div>
+                    </div>
+                </div>
+
+                <div class="floating-feature p-sched">
+                    <div class="f-icon i-sched"></div>
+                    <span>Schedule</span>
+                </div>
+
+                <div class="floating-feature p-sum">
+                    <div class="f-icon i-sum"></div>
+                    <span>AI Summary</span>
+                </div>
+            </div>
+
+            <div class="action-tray">
+                <button class="btn-primary" onclick="window.location.href='second.html'">🚀 Get Started</button>
+                <button class="btn-secondary"><div class="info-icon">i</div> About</button>
+            </div>
+
+            <div class="footer-tag">Powered by AI Technology</div>
+        </div>
+    </div>
+
+    <div class="phone-container">
+        <div class="status-bar">
+            <div>9:41</div>
+            <div class="status-icons">
+                <svg width="15" height="11" viewBox="0 0 24 24"><path d="M12 21l-12-18h24z"/></svg>
+                <svg width="18" height="11" viewBox="0 0 24 24"><rect x="2" y="4" width="16" height="16" rx="2"/><path d="M22 9v6"/></svg>
+            </div>
+        </div>
+
+        <div class="dashboard-screen">
+            <div class="dash-header">
+                <!-- 3 Dash symbol now acts as a functional button -->
+                <div class="menu-burger" onclick="window.location.href='menu.html'">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class="header-actions">
+                    <div class="notif-bell"><div class="notif-dot"></div></div>
+                    <div class="profile-badge">
+                        <div class="profile-img"></div>
+                        <span class="profile-name">Priyadharshini N ▾</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="welcome-block">
+                <h2>Welcome Back,<br><span>Priyadharshini N</span> 👋</h2>
+                <p>Let's organize today's meetings.</p>
+            </div>
+
+            <div class="hero-dashboard-graphic">
+                <div class="dash-hero-left">
+                    <div class="blue-mic-clay"></div>
+                </div>
+                <div class="dash-hero-right">
+                    <div class="robot-centerpiece" style="transform: scale(0.75); box-shadow: none;">
+                        <div class="robot-vector"></div>
+                        <div class="minutes-sheet">
+                            <div class="sheet-title">Meeting Minutes</div>
+                            <div class="sheet-row"><div class="sheet-check"></div><div class="sheet-line"></div></div>
+                            <div class="sheet-row"><div class="sheet-check"></div><div class="sheet-line"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-card meetings">
+                    <div class="stat-icon-wrapper">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 8 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    </div>
+                    <div class="stat-value">45</div>
+                    <div class="stat-label">Meetings</div>
+                    <div class="stat-period">This Month</div>
+                </div>
+                <div class="stat-card hours">
+                    <div class="stat-icon-wrapper">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                    </div>
+                    <div class="stat-value">18 <span>hrs</span></div>
+                    <div class="stat-label">Hours Recorded</div>
+                    <div class="stat-period">This Month</div>
+                </div>
+                <div class="stat-card accuracy">
+                    <div class="stat-icon-wrapper">
+                        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+                    </div>
+                    <div class="stat-value">98%</div>
+                    <div class="stat-label">AI Accuracy</div>
+                    <div class="stat-period">This Month</div>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid Menu Items linked to respective pages -->
+            <div class="menu-grid">
+                <div class="grid-item item-new-meeting" onclick="window.location.href='third.html'"></div>
+                    <div class="grid-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    </div>
+                    <h3>New Meeting</h3>
+                    <p>Start a new meeting and record or upload audio.</p>
+                    <div class="grid-arrow-btn"><svg viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21 12l-8.15-8.15-1.42 1.42 5.43 5.43H5v2z"/></svg></div>
+                </div>
+                <div class="grid-item item-prev-meetings" onclick="window.location.href='eighth.html'">
+                    <div class="grid-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg>
+                    </div>
+                    <h3>Previous Meetings</h3>
+                    <p>View and manage all your previous meetings.</p>
+                    <div class="grid-arrow-btn"><svg viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21 12l-8.15-8.15-1.42 1.42 5.43 5.43H5v2z"/></svg></div>
+                </div>
+                <div class="grid-item item-record" onclick="window.location.href='fourth.html'">
+                    <div class="grid-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+                    </div>
+                    <h3>Record Meeting</h3>
+                    <p>Record your meeting with high quality audio.</p>
+                    <div class="grid-arrow-btn"><svg viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21 12l-8.15-8.15-1.42 1.42 5.43 5.43H5v2z"/></svg></div>
+                </div>
+                <div class="grid-item item-ai" onclick="window.location.href='sixth.html'">
+                    <div class="grid-icon">
+                        <div class="top-robot-icon" style="width: 32px; height: 32px; background-size: 20px; box-shadow: none;"></div>
+                    </div>
+                    <h3>AI Processing</h3>
+                    <p>Let AI transcribe and process your meeting automatically.</p>
+                    <div class="grid-arrow-btn"><svg viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21 12l-8.15-8.15-1.42 1.42 5.43 5.43H5v2z"/></svg></div>
+                </div>
+                <div class="grid-item item-gen" onclick="window.location.href='seventh.html'">
+                    <div class="grid-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    </div>
+                    <h3>Generated Minutes</h3>
+                    <p>View, edit and export AI generated meeting minutes.</p>
+                    <div class="grid-arrow-btn"><svg viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21 12l-8.15-8.15-1.42 1.42 5.43 5.43H5v2z"/></svg></div>
+                </div>
+                <div class="grid-item item-analytics" onclick="window.location.href='nineth.html'">
+                    <div class="grid-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="%237e22ce"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 16H6c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1h12c0 .55-.45 1-1 1v12c0 .55-.45 1-1 1zm-7-4h2v3h-2zm4-6h2v9h-2zm-8 3h2v6H7z"/></svg>
+                    </div>
+                    <h3>Analytics</h3>
+                    <p>Explore insights and analytics from your meetings.</p>
+                    <div class="grid-arrow-btn"><svg viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21 12l-8.15-8.15-1.42 1.42 5.43 5.43H5v2z"/></svg></div>
+                </div>
+            </div>
+
+            <div class="tab-navigator">
+                <div class="tab-item active">
+                    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                    <span>Home</span>
+                </div>
+                <a href="fourth.html" style="text-decoration: none;">
+                    <div class="tab-item">
+                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+                        <span>Record</span>
+                    </div>
+                </a>
+                <a href="third.html" style="text-decoration: none;">
+                    <div class="tab-item">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                        <span>Minutes</span>
+                    </div>
+                </a>
+                <a href="nineth.html" style="text-decoration: none;">
+                    <div class="tab-item">
+                        <svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+                        <span>History</span>
+                    </div>
+                </a>
+                <a href="tenth.html" style="text-decoration: none;">
+                    <div class="tab-item">
+                        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 12zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        <span>Profile</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

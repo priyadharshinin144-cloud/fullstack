@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile UI</title>
+    <!-- Font Awesome for exact matching icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Clean, modern Sans-Serif Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-primary: #0F172A;
+            --text-secondary: #64748B;
+            --primary-blue: #2563EB;
+            --light-blue: #EFF6FF;
+            --border-color: #F1F5F9;
+            --accent-red: #EF4444;
+            --light-red: #FEF2F2;
+            
+            /* 3D Neumorphic Shadows */
+            --shadow-3d: 0 10px 20px rgba(0, 0, 0, 0.03), 0 4px 6px rgba(0, 0, 0, 0.02), inset 0 -2px 0 rgba(0, 0, 0, 0.05);
+            --button-3d: 0 4px 6px rgba(37, 99, 215, 0.15), inset 0 -3px 0 rgba(0, 0, 0, 0.1);
+            --button-3d-hover: 0 8px 15px rgba(37, 99, 215, 0.2), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #E2E8F0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+
+        /* Mobile Container Wrapper to mimic the device layout */
+        .mobile-container {
+            width: 412px;
+            background-color: var(--bg-color);
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Dark Mode variables */
+        .mobile-container.dark-theme {
+            --bg-color: #0F172A;
+            --card-bg: #1E293B;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --border-color: #334155;
+            --light-blue: #1E293B;
+            --shadow-3d: 0 10px 20px rgba(0, 0, 0, 0.3), inset 0 -2px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .mobile-container.dark-theme .nav-bar {
+            background: rgba(30, 41, 59, 0.94);
+        }
+
+        .mobile-container.dark-theme .stat-box {
+            background: #1E293B;
+            border-color: #334155;
+        }
+
+        .mobile-container.dark-theme .header-title-box h1 {
+            color: #F8FAFC;
+        }
+
+        .mobile-container.dark-theme .menu-item:hover {
+            background-color: #1E293B;
+        }
+
+        /* Status Bar Simulation */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 24px 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        /* Header Navigation */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+        }
+
+        .back-btn, .notification-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .back-btn:active, .notification-btn:active {
+            transform: scale(0.9);
+        }
+
+        .notification-btn {
+            position: relative;
+        }
+
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-red);
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            border: 1.5px solid var(--bg-color);
+        }
+
+        .header-title-box {
+            text-align: center;
+        }
+
+        .header-title-box h1 {
+            font-size: 19px;
+            font-weight: 700;
+            color: #1E293B;
+        }
+
+        .header-title-box p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* Main Scrollable Content Container */
+        .content {
+            padding: 16px;
+            overflow-y: auto;
+            max-height: 720px;
+            padding-bottom: 90px; /* Space for fixed bottom navigation */
+        }
+
+        /* Profile Summary Card */
+        .profile-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-3d);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .profile-upper {
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .avatar-container {
+            position: relative;
+            width: 72px;
+            height: 72px;
+            margin-right: 14px;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .cam-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--primary-blue);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 10px;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .profile-details h2 {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .profile-details p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 2px 0 6px;
+        }
+
+        .badge-pro {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .edit-profile-btn {
+            position: absolute;
+            right: 0;
+            top: 4px;
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            border: none;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            box-shadow: 0 2px 4px rgba(37, 99, 215, 0.06);
+            transition: all 0.2s ease;
+        }
+
+        .edit-profile-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(37, 99, 215, 0.12);
+        }
+
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 14px;
+        }
+
+        .stat-box {
+            text-align: center;
+            background: #FAFCFF;
+            padding: 10px 4px;
+            border-radius: 12px;
+            border: 1px solid #F0F4F8;
+        }
+
+        .stat-icon-wrapper {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .stat-box.meetings .stat-icon-wrapper { color: #3B82F6; }
+        .stat-box.hours .stat-icon-wrapper { color: #10B981; }
+        .stat-box.accuracy .stat-icon-wrapper { color: #8B5CF6; }
+
+        .stat-box .value {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-box .label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+
+        /* Promo Banner Plan Box */
+        .promo-banner {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-3d);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .promo-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .promo-icon-box {
+            background-color: var(--light-blue);
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-blue);
+            font-size: 16px;
+        }
+
+        .promo-text h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .promo-text p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+
+        /* 3D Manage Plan Button Style */
+        .manage-plan-btn {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--button-3d);
+        }
+
+        .manage-plan-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--button-3d-hover);
+        }
+
+        .manage-plan-btn:active {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(37, 99, 215, 0.1);
+        }
+
+        /* List Groups Settings Options Layout */
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 0 10px 4px;
+        }
+
+        .menu-group {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-3d);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Complete list item 3D Lift Animation on hover */
+        .menu-item:hover {
+            background-color: #FAFCFF;
+            transform: translateY(-2px) scale(1.005);
+            z-index: 2;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        .menu-item-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .menu-icon-wrapper {
+            width: 32px;
+            height: 32px;
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .menu-text h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .menu-text p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+
+        .menu-item-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #94A3B8;
+            font-size: 12px;
+        }
+
+        /* Language Tag Selection Indicator Style */
+        .lang-badge {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Toggle Switches */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #CBD5E1;
+            transition: .3s;
+            border-radius: 22px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-blue);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(18px);
+        }
+
+        /* Log out Button Component */
+        .logout-btn-container {
+            margin-top: 8px;
+            padding: 0 4px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            background-color: var(--light-red);
+            color: var(--accent-red);
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.05), inset 0 -2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(239, 68, 68, 0.12), inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .logout-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Bottom Fixed Navigation Bar */
+        .nav-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 72px;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-color);
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            align-items: center;
+            padding: 0 6px;
+            z-index: 10;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #94A3B8;
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 500;
+            gap: 4px;
+            height: 100%;
+            position: relative;
+            transition: color 0.2s;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+        }
+
+        .nav-item.active {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 12px;
+            width: 16px;
+            height: 3px;
+            background-color: var(--primary-blue);
+            border-radius: 2px;
+        }
+
+        /* Interactive Drawer Styles */
+        .drawer-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 100;
+        }
+
+        .drawer-overlay.active {
+            display: flex;
+        }
+
+        .drawer-content {
+            background: var(--card-bg);
+            width: 100%;
+            border-radius: 28px 28px 0 0;
+            padding: 24px;
+            box-shadow: 0 -10px 25px rgba(0,0,0,0.1);
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        .drawer-overlay.active .drawer-content {
+            transform: translateY(0);
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .drawer-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .drawer-close {
+            background: var(--light-blue);
+            border: none;
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .drawer-body {
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        /* Form elements for settings */
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-color);
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-blue);
+        }
+
+        .btn-action {
+            width: 100%;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--button-3d);
+            transition: all 0.2s;
+        }
+
+        .btn-action:active {
+            transform: translateY(1px);
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .radio-option input {
+            accent-color: var(--primary-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+        
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span>9:41</span>
+            <div class="status-icons">
+                <i class="fa-solid fa-signal"></i>
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-battery-full"></i>
+            </div>
+        </div>
+
+        <!-- Navigation Header -->
+        <div class="header">
+            <button class="back-btn"><i class="fa-solid fa-arrow-left"></i></button>
+            <div class="header-title-box">
+                <h1>My Profile</h1>
+                <p>Manage your account and preferences.</p>
+            </div>
+            <button class="notification-btn">
+                <i class="fa-regular fa-bell"></i>
+                <div class="notification-dot"></div>
+            </button>
+        </div>
+
+        <!-- Scrollable Profile Content Box -->
+        <div class="content">
+            
+            <!-- User Profile Summary Section -->
+            <div class="profile-card">
+                <div class="profile-upper">
+                    <div class="avatar-container">
+                        <!-- Placeholder placeholder matches alignment and structure -->
+                        <img class="avatar-img" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150" alt="Priyadharshini N" id="profile-img">
+                        <div class="cam-icon"><i class="fa-solid fa-camera"></i></div>
+                    </div>
+                    <div class="profile-details">
+                        <h2 id="profile-name-text">Priyadharshini N</h2>
+                        <p id="profile-email-text">priyadharshini.n@example.com</p>
+                        <span class="badge-pro">
+                            <i class="fa-solid fa-gem" style="font-size: 9px;"></i> Pro Member
+                        </span>
+                    </div>
+                    <button class="edit-profile-btn" id="edit-profile-action-btn">
+                        <i class="fa-solid fa-pen" style="font-size: 10px;"></i> Edit Profile
+                    </button>
+                </div>
+                
+                <!-- Quick Metrics Grid -->
+                <div class="stats-grid">
+                    <div class="stat-box meetings">
+                        <div class="stat-icon-wrapper"><i class="fa-solid fa-users"></i></div>
+                        <div class="value">24</div>
+                        <div class="label">Meetings</div>
+                    </div>
+                    <div class="stat-box hours">
+                        <div class="stat-icon-wrapper"><i class="fa-regular fa-clock"></i></div>
+                        <div class="value">18 <span style="font-size: 10px; font-weight:500;">hrs</span></div>
+                        <div class="label">Hours Recorded</div>
+                    </div>
+                    <div class="stat-box accuracy">
+                        <div class="stat-icon-wrapper"><i class="fa-solid fa-chart-line"></i></div>
+                        <div class="value">98%</div>
+                        <div class="label">AI Accuracy</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Subscription Callout Action Info Block -->
+            <div class="promo-banner">
+                <div class="promo-left">
+                    <div class="promo-icon-box">
+                        <i class="fa-solid fa-gem"></i>
+                    </div>
+                    <div class="promo-text">
+                        <h3>You're on Pro Plan</h3>
+                        <p>Enjoy advanced features and unlimited access.</p>
+                    </div>
+                </div>
+                <button class="manage-plan-btn" id="manage-plan-banner-btn">Manage Plan <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i></button>
+            </div>
+
+            <!-- Section 1: Account Setup List -->
+            <h3 class="section-title">Account</h3>
+            <div class="menu-group">
+                <div class="menu-item" id="menu-personal-info">
+                    <div class="menu-item-left">
+                        <div class="menu-icon-wrapper"><i class="fa-regular fa-user"></i></div>
+                        <div class="menu-text">
+                            <h4>Personal Information</h4>
+                            <p>Update your personal details</p>
+                        </div>
+                    </div>
+                    <div class="menu-item-right"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+                
+                <div class="menu-item" id="menu-change-password">
+                    <div class="menu-item-left">
+                        <div class="menu-icon-wrapper"><i class="fa-solid fa-lock"></i></div>
+                        <div class="menu-text">
+                            <h4>Change Password</h4>
+                            <p>Update your password</p>
+                        </div>
+                    </div>
+                    <div class="menu-item-right"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+
+                <div class="menu-item" id="menu-email-preferences">
+                    <div class="menu-item-left">
+                        <div class="menu-icon-wrapper"><i class="fa-regular fa-envelope"></i></div>
+                        <div class="menu-text">
+                            <h4>Email Preferences</h4>
+                            <p>Manage email notifications</p>
+                        </div>
+                    </div>
+                    <div class="menu-item-right"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+
+                <div class="menu-item" id="menu-subscription">
+                    <div class="menu-item-left">
+                        <div class="menu-icon-wrapper"><i class="fa-regular fa-bookmark"></i></div>
+                        <div class="menu-text">
+                            <h4>Subscription</h4>
+                            <p>Manage your subscription plan</p>
+                        </div>
+                    </div>
+                    <div class="menu-item-right"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+            </div>
+
+            <!-- Section 2: App Preferences Settings -->
+            <h3 class="section-title">App Settings</h3>
+            <div class="menu-group">
+                <div class="menu-item" id="menu-recording-settings">
+                    <div class="menu-item-left">
+                        <div class="menu-icon-wrapper"><i class="fa-solid fa-microphone"></i></div>
+                        <div class="menu-text">
+                            <h4>Recording Settings</h4>
+                            <p>Configure recording preferences</p>
+                        </div>
+                    </div>
+                    <div class="menu-item-right"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+
+                <div class="menu-item" id="menu-ai-settings">
+                    <div class="menu-item-left">
+                        <div class="menu-icon-wrapper"><i class="fa-solid fa-robot"></i></div>
+                        <div class="menu-text">
+                            <h4>AI & Processing Settings</h4>
+                            <p>Configure AI processing preferences</p>
+                        </div>
+                    </div>
+                    <div class="menu-item-right"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+
+                <div class="menu-item" id="menu-language">
+                    <div class="menu-item-left">
+                        <div class="menu-icon-wrapper"><i class="fa-solid fa-globe"></i></div>
+                        <div class="menu-text">
+                            <h4>Language</h4>
+                            <p>Change app language</p>
+                        </div>
+                    </div>
+                    <div class="menu-item-right">
+                        <div class="lang-badge" id="current-lang-badge">English <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i></div>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <div class="menu-item-left">
+                        <div class="menu-icon-wrapper"><i class="fa-regular fa-moon"></i></div>
+                        <div class="menu-text">
+                            <h4>Dark Mode</h4>
+                            <p>Switch between light and dark theme</p>
+                        </div>
+                    </div>
+                    <div class="menu-item-right">
+                        <label class="switch">
+                            <input type="checkbox" id="dark-mode-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Legal Support Details Group -->
+            <h3 class="section-title">Support & About</h3>
+            <div class="menu-group">
+                <div class="menu-item" id="menu-help-support">
+                    <div class="menu-item-left">
+                        <div class="menu-icon-wrapper"><i class="fa-solid fa-headset"></i></div>
+                        <div class="menu-text">
+                            <h4>Help & Support</h4>
+                            <p>Get help and contact support</p>
+                        </div>
+                    </div>
+                    <div class="menu-item-right"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+
+                <div class="menu-item" id="menu-about">
+                    <div class="menu-item-left">
+                        <div class="menu-icon-wrapper"><i class="fa-solid fa-circle-info"></i></div>
+                        <div class="menu-text">
+                            <h4>About the App</h4>
+                            <p>Version 1.0.0</p>
+                        </div>
+                    </div>
+                    <div class="menu-item-right"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+
+                <div class="menu-item" id="menu-privacy">
+                    <div class="menu-item-left">
+                        <div class="menu-icon-wrapper"><i class="fa-solid fa-shield-halved"></i></div>
+                        <div class="menu-text">
+                            <h4>Privacy Policy</h4>
+                            <p>Read our privacy policy</p>
+                        </div>
+                    </div>
+                    <div class="menu-item-right"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+
+                <div class="menu-item" id="menu-terms">
+                    <div class="menu-item-left">
+                        <div class="menu-icon-wrapper"><i class="fa-regular fa-file-lines"></i></div>
+                        <div class="menu-text">
+                            <h4>Terms & Conditions</h4>
+                            <p>Read our terms and conditions</p>
+                        </div>
+                    </div>
+                    <div class="menu-item-right"><i class="fa-solid fa-chevron-right"></i></div>
+                </div>
+            </div>
+
+            <!-- Log Out Layout Container -->
+            <div class="logout-btn-container">
+                <button class="logout-btn">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+                </button>
+            </div>
+
+        </div>
+
+        <!-- System Bottom App Navigation Bar -->
+        <div class="nav-bar">
+            <a href="index.html" class="nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </a>
+            <a href="fourth.html" class="nav-item">
+                <i class="fa-solid fa-microphone"></i>
+                <span>Record</span>
+            </a>
+            <a href="third.html" class="nav-item">
+                <i class="fa-regular fa-file-text"></i>
+                <span>Minutes</span>
+            </a>
+            <a href="nineth.html" class="nav-item">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>History</span>
+            </a>
+            <a href="tenth.html" class="nav-item active">
+                <i class="fa-regular fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </div>
+
+        <!-- Interactive Settings Panel Drawer -->
+        <div class="drawer-overlay" id="app-drawer">
+            <div class="drawer-content">
+                <div class="drawer-header">
+                    <h3 class="drawer-title" id="drawer-title">Settings</h3>
+                    <button class="drawer-close" id="drawer-close-btn"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="drawer-body" id="drawer-body">
+                    <!-- Dynamic Interactive Form goes here -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application Script Logic -->
+    <script>
+        const container = document.querySelector('.mobile-container');
+        const drawer = document.getElementById('app-drawer');
+        const drawerTitle = document.getElementById('drawer-title');
+        const drawerBody = document.getElementById('drawer-body');
+        const drawerClose = document.getElementById('drawer-close-btn');
+
+        // Close settings drawer
+        function closeDrawer() {
+            drawer.classList.remove('active');
+        }
+        drawerClose.addEventListener('click', closeDrawer);
+        drawer.addEventListener('click', (e) => {
+            if (e.target === drawer) closeDrawer();
+        });
+
+        // Open settings drawer with specified interactive content
+        function openDrawer(title, htmlContent) {
+            drawerTitle.textContent = title;
+            drawerBody.innerHTML = htmlContent;
+            drawer.classList.add('active');
+        }
+
+        // --- BACK BUTTON NAVIGATION (UPPER ARROW) ---
+        const backBtn = document.querySelector('.back-btn');
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                window.location.href = 'nineth.html';
+            });
+        }
+
+        // --- NOTIFICATIONS BTN INTERACTION ---
+        const notificationBtn = document.querySelector('.notification-btn');
+        if (notificationBtn) {
+            notificationBtn.addEventListener('click', () => {
+                openDrawer('Notifications', `
+                    <div style="font-size: 13px; color: var(--text-primary);">
+                        <div style="padding: 12px; border-bottom: 1px solid var(--border-color); display: flex; align-items: start; gap: 10px;">
+                            <i class="fa-solid fa-circle-info" style="color: var(--primary-blue); margin-top: 2px;"></i>
+                            <div>
+                                <h5 style="font-weight: 600; margin-bottom: 2px;">Welcome to Pro Plan!</h5>
+                                <p style="color: var(--text-secondary); font-size: 11px;">You now have access to premium processing features.</p>
+                            </div>
+                        </div>
+                        <div style="padding: 12px; border-bottom: 1px solid var(--border-color); display: flex; align-items: start; gap: 10px;">
+                            <i class="fa-solid fa-circle-check" style="color: #10B981; margin-top: 2px;"></i>
+                            <div>
+                                <h5 style="font-weight: 600; margin-bottom: 2px;">Processing Complete</h5>
+                                <p style="color: var(--text-secondary); font-size: 11px;">Your last recorded meeting has been transcribed.</p>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        // --- LOG OUT BUTTON ACTION ---
+        const logoutBtn = document.querySelector('.logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                const confirmLogout = confirm('Are you sure you want to log out?');
+                if (confirmLogout) {
+                    alert('You have logged out successfully.');
+                    window.location.href = 'index.html'; // Redirecting to landing page
+                }
+            });
+        }
+
+        // 1. EDIT PROFILE & PERSONAL INFORMATION
+        const profileName = document.getElementById('profile-name-text');
+        const profileEmail = document.getElementById('profile-email-text');
+        const editProfileTriggers = [document.getElementById('edit-profile-action-btn'), document.getElementById('menu-personal-info')];
+        
+        editProfileTriggers.forEach(trigger => {
+            if (trigger) {
+                trigger.addEventListener('click', () => {
+                    openDrawer('Personal Information', `
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" class="form-control" id="edit-name-field" value="${profileName.textContent}">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" class="form-control" id="edit-email-field" value="${profileEmail.textContent}">
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="text" class="form-control" value="+1 (555) 019-2834">
+                        </div>
+                        <button class="btn-action" id="save-personal-info">Save Changes</button>
+                    `);
+
+                    document.getElementById('save-personal-info').addEventListener('click', () => {
+                        const newName = document.getElementById('edit-name-field').value;
+                        const newEmail = document.getElementById('edit-email-field').value;
+                        if (newName) profileName.textContent = newName;
+                        if (newEmail) profileEmail.textContent = newEmail;
+                        closeDrawer();
+                    });
+                });
+            }
+        });
+
+        // 2. CHANGE PASSWORD
+        document.getElementById('menu-change-password').addEventListener('click', () => {
+            openDrawer('Change Password', `
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" class="form-control" placeholder="••••••••">
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" class="form-control" placeholder="Min. 8 characters">
+                </div>
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" class="form-control" placeholder="Re-enter password">
+                </div>
+                <button class="btn-action" onclick="alert('Password changed successfully!'); closeDrawer();">Update Password</button>
+            `);
+        });
+
+        // 3. EMAIL PREFERENCES
+        document.getElementById('menu-email-preferences').addEventListener('click', () => {
+            openDrawer('Email Preferences', `
+                <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;">Select which emails you would like to receive.</p>
+                <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="font-size: 13px; font-weight:600;">Meeting Summaries</h4>
+                        <p style="font-size: 11px; color: var(--text-secondary);">Sent automatically after processing</p>
+                    </div>
+                    <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <div class="form-group" style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                    <div>
+                        <h4 style="font-size: 13px; font-weight:600;">Product Updates</h4>
+                        <p style="font-size: 11px; color: var(--text-secondary);">New features and tips</p>
+                    </div>
+                    <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <button class="btn-action" style="margin-top: 20px;" onclick="closeDrawer();">Save Preferences</button>
+            `);
+        });
+
+        // 4. SUBSCRIPTION & MANAGE PLAN
+        const subTriggers = [document.getElementById('menu-subscription'), document.getElementById('manage-plan-banner-btn')];
+        subTriggers.forEach(trigger => {
+            if (trigger) {
+                trigger.addEventListener('click', () => {
+                    openDrawer('Manage Subscription', `
+                        <div style="background: var(--light-blue); padding: 16px; border-radius: 16px; margin-bottom: 20px; text-align: center;">
+                            <span style="background: var(--primary-blue); color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight:700;">PRO ACTIVE</span>
+                            <h3 style="font-size: 20px; color: var(--primary-blue); margin: 8px 0 2px;">$14.99 / month</h3>
+                            <p style="font-size: 12px; color: var(--text-secondary);">Next billing date: Sept 12, 2026</p>
+                        </div>
+                        <h4 style="font-size: 13px; font-weight:700; margin-bottom: 12px;">Plan Features Included:</h4>
+                        <ul style="font-size: 12px; color: var(--text-secondary); padding-left: 18px; margin-bottom: 24px; line-height: 1.8;">
+                            <li>Unlimited High-Quality Audio Recordings</li>
+                            <li>Advanced AI Action-Item Summaries</li>
+                            <li>Multi-language Voice Processing</li>
+                            <li>Dedicated cloud processing & exports</li>
+                        </ul>
+                        <button class="btn-action" onclick="alert('Proceeding to billing secure portal...'); closeDrawer();">Change Plan or Cancel</button>
+                    `);
+                });
+            }
+        });
+
+        // 5. RECORDING SETTINGS
+        document.getElementById('menu-recording-settings').addEventListener('click', () => {
+            openDrawer('Recording Settings', `
+                <div class="form-group">
+                    <label>Audio Quality Level</label>
+                    <div class="radio-option">
+                        <input type="radio" id="q-high" name="quality" checked>
+                        <label for="q-high" style="margin: 0; cursor: pointer;">High Definition (Stereo HQ)</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="q-med" name="quality">
+                        <label for="q-med" style="margin: 0; cursor: pointer;">Standard (Compressed Balanced)</label>
+                    </div>
+                </div>
+                <div class="form-group" style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                    <div>
+                        <h4 style="font-size: 13px; font-weight: 600;">Auto-Pause Silence</h4>
+                        <p style="font-size: 11px; color: var(--text-secondary);">Pauses if sound levels drop</p>
+                    </div>
+                    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                </div>
+                <button class="btn-action" style="margin-top: 20px;" onclick="closeDrawer();">Apply Settings</button>
+            `);
+        });
+
+        // 6. AI & PROCESSING SETTINGS
+        document.getElementById('menu-ai-settings').addEventListener('click', () => {
+            openDrawer('AI Configuration', `
+                <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="font-size: 13px; font-weight: 600;">Smart Summary Extraction</h4>
+                        <p style="font-size: 11px; color: var(--text-secondary);">Generates meeting action steps</p>
+                    </div>
+                    <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <div class="form-group" style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                    <div>
+                        <h4 style="font-size: 13px; font-weight: 600;">Speaker Recognition</h4>
+                        <p style="font-size: 11px; color: var(--text-secondary);">Automatically detects different voices</p>
+                    </div>
+                    <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <button class="btn-action" style="margin-top: 20px;" onclick="closeDrawer();">Apply AI Rules</button>
+            `);
+        });
+
+        // 7. LANGUAGE SELECTOR
+        const currentLangBadge = document.getElementById('current-lang-badge');
+        document.getElementById('menu-language').addEventListener('click', () => {
+            openDrawer('Choose App Language', `
+                <div class="radio-option" id="lang-en">
+                    <input type="radio" name="lang" id="chk-en" checked>
+                    <label for="chk-en" style="margin:0; cursor:pointer;">English (US)</label>
+                </div>
+                <div class="radio-option" id="lang-ta">
+                    <input type="radio" name="lang" id="chk-ta">
+                    <label for="chk-ta" style="margin:0; cursor:pointer;">Tamil (தமிழ்)</label>
+                </div>
+                <div class="radio-option" id="lang-es">
+                    <input type="radio" name="lang" id="chk-es">
+                    <label for="chk-es" style="margin:0; cursor:pointer;">Spanish (Español)</label>
+                </div>
+                <button class="btn-action" style="margin-top: 20px;" id="save-language-btn">Confirm Selection</button>
+            `);
+
+            document.getElementById('save-language-btn').addEventListener('click', () => {
+                if (document.getElementById('chk-en').checked) currentLangBadge.innerHTML = 'English <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i>';
+                else if (document.getElementById('chk-ta').checked) currentLangBadge.innerHTML = 'Tamil <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i>';
+                else if (document.getElementById('chk-es').checked) currentLangBadge.innerHTML = 'Spanish <i class="fa-solid fa-chevron-down" style="font-size: 10px; margin-left: 2px;"></i>';
+                closeDrawer();
+            });
+        });
+
+        // 8. DARK MODE TOGGLE (Actual Theme Changer)
+         const darkToggle = document.getElementById('dark-mode-toggle');
+
+// Load saved theme
+if (localStorage.getItem("theme") === "dark") {
+    container.classList.add("dark-theme");
+    darkToggle.checked = true;
+}
+
+// Save theme
+darkToggle.addEventListener("change", function () {
+    if (this.checked) {
+        container.classList.add("dark-theme");
+        localStorage.setItem("theme", "dark");
+    } else {
+        container.classList.remove("dark-theme");
+        localStorage.setItem("theme", "light");
+    }
+});
+        // 9. HELP & SUPPORT
+        document.getElementById('menu-help-support').addEventListener('click', () => {
+            openDrawer('Help & Support', `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <i class="fa-solid fa-headset" style="font-size: 36px; color: var(--primary-blue); margin-bottom: 8px;"></i>
+                    <p style="font-size: 12px; color: var(--text-secondary);">Got questions? Our support team is active 24/7.</p>
+                </div>
+                <div class="form-group">
+                    <label>How can we help?</label>
+                    <textarea class="form-control" rows="3" placeholder="Describe your inquiry..."></textarea>
+                </div>
+                <button class="btn-action" onclick="alert('Inquiry sent! We will reach out to your email address.'); closeDrawer();">Submit Ticket</button>
+            `);
+        });
+
+        // 10. ABOUT
+        document.getElementById('menu-about').addEventListener('click', () => {
+            openDrawer('About the App', `
+                <div style="text-align: center;">
+                    <i class="fa-solid fa-robot" style="font-size: 40px; color: var(--primary-blue); margin-bottom: 12px;"></i>
+                    <h3 style="font-size: 16px; font-weight:700;">Meeting AI Transcriber</h3>
+                    <p style="font-size: 12px; color: var(--text-secondary); margin: 4px 0 16px;">Version 1.0.0 (Build 9023)</p>
+                    <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.6; padding: 0 10px;">
+                        Created to deliver rapid voice parsing, meeting summaries, and automation for busy teams.
+                    </p>
+                    <button class="btn-action" style="margin-top: 24px;" onclick="alert('Your app is up to date!'); closeDrawer();">Check for Updates</button>
+                </div>
+            `);
+        });
+
+        // 11. PRIVACY POLICY
+        document.getElementById('menu-privacy').addEventListener('click', () => {
+            openDrawer('Privacy Policy', `
+                <div style="font-size: 12px; line-height: 1.6; color: var(--text-secondary); max-height: 300px; overflow-y: auto; padding-right: 4px;">
+                    <h4 style="font-size: 13px; font-weight:700; color: var(--text-primary); margin-bottom: 8px;">1. Information We Collect</h4>
+                    <p style="margin-bottom: 12px;">We securely collect voice audio and transcribe your meeting files strictly for processing summary outputs. We never resell your voice prints or conversational metadata.</p>
+                    <h4 style="font-size: 13px; font-weight:700; color: var(--text-primary); margin-bottom: 8px;">2. Security Standards</h4>
+                    <p style="margin-bottom: 12px;">All information transiting through our cloud platforms is securely locked down using end-to-end AES-256 level standard cryptographic keys.</p>
+                </div>
+                <button class="btn-action" style="margin-top: 20px;" onclick="closeDrawer();">Accept & Close</button>
+            `);
+        });
+
+        // 12. TERMS & CONDITIONS
+        document.getElementById('menu-terms').addEventListener('click', () => {
+            openDrawer('Terms & Conditions', `
+                <div style="font-size: 12px; line-height: 1.6; color: var(--text-secondary); max-height: 300px; overflow-y: auto; padding-right: 4px;">
+                    <h4 style="font-size: 13px; font-weight:700; color: var(--text-primary); margin-bottom: 8px;">1. Agreement of Use</h4>
+                    <p style="margin-bottom: 12px;">By running transcription processes, you certify that all participants in your meeting have explicitly consented to being recorded under local jurisdiction rules.</p>
+                    <h4 style="font-size: 13px; font-weight:700; color: var(--text-primary); margin-bottom: 8px;">2. Account Ownership</h4>
+                    <p style="margin-bottom: 12px;">You are responsible for keeping your credentials confidential. Misuse of voice compute resources may trigger standard limits to ensure security stability.</p>
+                </div>
+                <button class="btn-action" style="margin-top: 20px;" onclick="closeDrawer();">Agree & Close</button>
+            `);
+        });
+    </script>
+</body>
+</html>

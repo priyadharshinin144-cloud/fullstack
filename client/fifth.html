@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Audio - AI Meeting Minutes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(180deg, #f4f8ff 0%, #ffffff 40%, #e9f2fe 100%);
+            --primary-blue: #1e66ff;
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --btn-shadow: #0a44b8;
+            --text-dark: #091a3a;
+            --text-muted: #8493a8;
+            --border-dash: #c2daf8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Smartphone App Wrapper Container */
+        .app-container {
+            width: 390px;
+            height: 844px;
+            background: var(--bg-gradient);
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(9, 26, 58, 0.15), inset 0 2px 4px rgba(255,255,255,0.9);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 16px 24px 24px 24px;
+            position: relative;
+            border: 8px solid #ffffff;
+        }
+
+        /* Status Bar Mockup space */
+        .status-bar-mock {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-dark);
+            padding: 4px 8px 16px 8px;
+            z-index: 10;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 6px;
+            font-size: 11px;
+        }
+
+        /* Top Action Header Navbar */
+        .top-navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            z-index: 10;
+        }
+
+        .circle-nav-btn {
+            width: 44px;
+            height: 44px;
+            background: #ffffff;
+            border: none;
+            border-radius: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-dark);
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(9, 26, 58, 0.04);
+            transition: all 0.2s ease;
+        }
+        
+        .circle-nav-btn.round {
+            border-radius: 50%;
+        }
+
+        .circle-nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(9, 26, 58, 0.08);
+        }
+
+        /* Floating Glow Wave & Mic Elements */
+        .floating-glow-left {
+            position: absolute;
+            left: 20px;
+            top: 125px;
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #ffffff 0%, #e3efff 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(30, 102, 255, 0.15), inset 0 2px 4px #fff;
+            color: var(--primary-blue);
+            font-size: 14px;
+            animation: softFloat 4s ease-in-out infinite;
+        }
+
+        .floating-glow-right {
+            position: absolute;
+            right: 20px;
+            top: 125px;
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #ffffff 0%, #e3efff 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 20px rgba(30, 102, 255, 0.15), inset 0 2px 4px #fff;
+            color: var(--primary-blue);
+            font-size: 15px;
+            animation: softFloat 4s ease-in-out infinite 2s;
+        }
+
+        /* Main Titles */
+        .title-section {
+            text-align: center;
+            margin-bottom: 24px;
+            z-index: 10;
+        }
+
+        .title-section h1 {
+            font-size: 28px;
+            color: var(--text-dark);
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .title-section p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            padding: 0 24px;
+            font-weight: 500;
+        }
+
+        /* Main Outer Box Dashed Container */
+        .upload-dashed-box {
+            background: #ffffff;
+            border: 2px dashed var(--border-dash);
+            border-radius: 32px;
+            padding: 30px 20px 24px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 20px 40px rgba(30, 102, 255, 0.04);
+            z-index: 10;
+            position: relative;
+        }
+
+        /* 3D Fluffy Cloud Setup */
+        .cloud-illustration-wrapper {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 16px;
+            width: 160px;
+            height: 100px;
+        }
+
+        .main-cloud-shadow {
+            font-size: 110px;
+            color: #ffffff;
+            filter: drop-shadow(0 15px 25px rgba(160, 190, 240, 0.45)) drop-shadow(0 2px 4px rgba(0,0,0,0.02));
+        }
+
+        .cloud-arrow-up {
+            position: absolute;
+            color: #2b70fa;
+            font-size: 32px;
+            top: 42%;
+            filter: drop-shadow(0 4px 8px rgba(43, 112, 250, 0.3));
+            animation: pulseArrow 2s infinite ease-in-out;
+        }
+
+        /* Decorative Audio Waveforms inside card background */
+        .bg-waveform-left, .bg-waveform-right {
+            position: absolute;
+            top: 45px;
+            font-size: 24px;
+            color: #d2e4fc;
+            opacity: 0.7;
+        }
+        .bg-waveform-left { left: 24px; }
+        .bg-waveform-right { right: 24px; }
+
+        .upload-dashed-box h3 {
+            font-size: 18px;
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .upload-dashed-box p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        /* Text Line Dividers "OR" */
+        .text-line-divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            margin: 0 auto 20px auto;
+            width: 50%;
+        }
+
+        .text-line-divider::before, .text-line-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e2eefc;
+        }
+        .text-line-divider:not(:empty)::before { margin-right: .8em; }
+        .text-line-divider:not(:empty)::after { margin-left: .8em; }
+
+        /* Tactile 3D Choose File Button */
+        .btn-choose-file {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e66ff 100%);
+            color: white;
+            border: none;
+            padding: 14px 40px;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 16px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 0px var(--btn-shadow), 0 12px 24px rgba(30, 102, 255, 0.25);
+            transition: all 0.1s ease;
+        }
+
+        .btn-choose-file:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0px var(--btn-shadow), 0 14px 28px rgba(30, 102, 255, 0.3);
+        }
+
+        .btn-choose-file:active {
+            transform: translateY(5px);
+            box-shadow: 0 0px 0px var(--btn-shadow), 0 4px 10px rgba(30, 102, 255, 0.2);
+        }
+
+        /* Supported Tag Layout Formats Section */
+        .section-label {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .section-label::before, .section-label::after {
+            content: '';
+            width: 40px;
+            border-bottom: 1px solid #e2eefc;
+        }
+
+        .formats-pill-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .format-pill {
+            flex: 1;
+            padding: 12px 6px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(9, 26, 58, 0.02);
+            background: #ffffff;
+        }
+
+        .pill-mp3 { color: #1e66ff; background: #eef4ff; }
+        .pill-wav { color: #2563eb; background: #eef6ff; }
+        .pill-m4a { color: #b53eff; background: #faf2ff; }
+
+        /* Robot Representation Layout */
+        .ai-assistant-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            margin-top: auto;
+            position: relative;
+        }
+
+        /* 3D Rendered CSS Robot Avatar Component */
+        .ai-bot-avatar-3d {
+            width: 76px;
+            height: 76px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: softFloat 3.5s ease-in-out infinite;
+        }
+
+        .bot-head {
+            width: 60px;
+            height: 46px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(9, 26, 58, 0.08), inset -3px -3px 8px rgba(0,0,0,0.05);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            border: 1px solid #f0f4f9;
+        }
+
+        .bot-screen {
+            width: 46px;
+            height: 32px;
+            background: #0d1b3e;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .bot-eye {
+            width: 10px;
+            height: 6px;
+            background: #00f3ff;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 0 8px #00f3ff;
+        }
+
+        .bot-ear {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background: #2563eb;
+            border-radius: 4px;
+            top: 13px;
+        }
+        .bot-ear.left { left: -6px; }
+        .bot-ear.right { right: -6px; }
+        
+        .bot-antenna {
+            width: 3px;
+            height: 10px;
+            background: #2563eb;
+            position: absolute;
+            top: -9px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .bot-antenna::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -2.5px;
+            width: 8px;
+            height: 8px;
+            background: #00f3ff;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #00f3ff;
+        }
+
+        .bot-body {
+            width: 44px;
+            height: 24px;
+            background: #ffffff;
+            border-radius: 0 0 16px 16px;
+            margin-top: -4px;
+            box-shadow: 0 8px 16px rgba(9, 26, 58, 0.06);
+            border: 1px solid #f0f4f9;
+        }
+
+        /* Pristine Rounded Speech Box Card */
+        .speech-bubble-card {
+            flex: 1;
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 18px;
+            box-shadow: 0 12px 30px rgba(9, 26, 58, 0.04);
+            position: relative;
+            font-size: 13.5px;
+            color: var(--text-dark);
+            line-height: 1.5;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.9);
+        }
+
+        .speech-bubble-card::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 28px;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-right: 8px solid #ffffff;
+        }
+
+        .speech-bubble-card i.fa-quote-left {
+            color: #2b70fa;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 4px;
+            opacity: 0.8;
+        }
+
+        .speech-bubble-card span.highlight-blue {
+            color: var(--primary-blue);
+            font-weight: 800;
+        }
+
+        /* Embedded Waveform inside Speech bubble mockup */
+        .inner-bubble-waveform {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5px;
+            margin-top: 10px;
+            height: 12px;
+            opacity: 0.35;
+        }
+        .inner-bubble-waveform div {
+            width: 2.5px;
+            height: 100%;
+            background: var(--primary-blue);
+            border-radius: 2px;
+        }
+        .inner-bubble-waveform div:nth-child(even) { height: 60%; }
+        .inner-bubble-waveform div:nth-child(3n) { height: 90%; }
+        .inner-bubble-waveform div:nth-child(4n) { height: 40%; }
+
+        /* Tactile 3D Bottom Navigation Trigger Button */
+        .btn-primary-continue {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e66ff 100%);
+            color: #ffffff;
+            border: none;
+            width: 100%;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 5px 0px var(--btn-shadow), 0 12px 26px rgba(30, 102, 255, 0.25);
+            transition: all 0.1s ease;
+            margin-bottom: 4px;
+            z-index: 10;
+        }
+
+        .btn-primary-continue:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0px var(--btn-shadow), 0 14px 30px rgba(30, 102, 255, 0.3);
+        }
+
+        .btn-primary-continue:active {
+            transform: translateY(5px);
+            box-shadow: 0 0px 0px var(--btn-shadow), 0 4px 12px rgba(30, 102, 255, 0.2);
+        }
+        
+        /* Device Bottom Pill Handle Bar Indicator */
+        .home-indicator-bar {
+            width: 140px;
+            height: 5px;
+            background: #cbd5e1;
+            border-radius: 10px;
+            margin: 14px auto 0 auto;
+            z-index: 10;
+        }
+
+        /* Animation Keyframes Definition Layout */
+        @keyframes softFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        @keyframes pulseArrow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- System Top Bar -->
+        <div class="status-bar-mock">
+            <span>9:41</span>
+            <div class="status-icons">
+                <i class="fa-solid fa-signal"></i>
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-battery-full"></i>
+            </div>
+        </div>
+
+        <!-- Toolbar Buttons -->
+        <div class="top-navbar">
+            <button class="circle-nav-btn" onclick="window.location.href='fourth.html'">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+        </div>
+
+        <!-- Floating UI Ambient elements -->
+        <div class="floating-glow-left"><i class="fa-solid fa-waveform"></i></div>
+        <div class="floating-glow-right"><i class="fa-solid fa-microphone"></i></div>
+
+        <!-- Main Headings -->
+        <div class="title-section">
+            <h1>Upload Audio</h1>
+            <p>Upload your meeting recording to generate AI meeting minutes.</p>
+        </div>
+
+        <!-- Central Dashed Upload Zone Layout Block -->
+        <div class="upload-dashed-box">
+            <i class="fa-solid fa-waveform bg-waveform-left"></i>
+            <i class="fa-solid fa-waveform bg-waveform-right"></i>
+
+            <div class="cloud-illustration-wrapper">
+                <i class="fa-solid fa-cloud main-cloud-shadow"></i>
+                <i class="fa-solid fa-arrow-up cloud-arrow-up"></i>
+            </div>
+            <h3>Drop your audio here</h3>
+            <p id="file-status">Drag & Drop your audio file here</p>
+            
+            <div class="text-line-divider">OR</div>
+            
+            <!-- Hidden real interactive upload element -->
+            <input type="file" id="audio-file-input" accept=".mp3,.wav,.m4a" style="display: none;">
+            
+            <button class="btn-choose-file">
+                <i class="fa-solid fa-folder"></i> Choose File
+            </button>
+        </div>
+
+        <!-- Supported Formats Pills Grid section -->
+        <div class="section-label">Supported Formats</div>
+        <div class="formats-pill-row">
+            <div class="format-pill pill-mp3">
+                <i class="fa-solid fa-music"></i> MP3
+            </div>
+            <div class="format-pill pill-wav">
+                <i class="fa-solid fa-volume-high"></i> WAV
+            </div>
+            <div class="format-pill pill-m4a">
+                <i class="fa-solid fa-microphone-lines"></i> M4A
+            </div>
+        </div>
+
+        <!-- Assistant Speeches Component Card -->
+        <div class="ai-assistant-container">
+            <div class="ai-bot-avatar-3d">
+                <div class="bot-antenna"></div>
+                <div class="bot-head">
+                    <div class="bot-ear left"></div>
+                    <div class="bot-screen">
+                        <div class="bot-eye"></div>
+                        <div class="bot-eye"></div>
+                    </div>
+                    <div class="bot-ear right"></div>
+                </div>
+                <div class="bot-body"></div>
+            </div>
+            <div class="speech-bubble-card">
+                <i class="fa-solid fa-quote-left"></i>
+                Your audio will be converted into <span class="highlight-blue">smart meeting minutes.</span>
+                <div class="inner-bubble-waveform">
+                    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Navigation Control Footer Trigger Button -->
+        <button class="btn-primary-continue">
+            Continue <i class="fa-solid fa-arrow-right"></i>
+        </button>
+
+        <!-- OS Bottom Home Indicator Pill decoration bar -->
+        <div class="home-indicator-bar"></div>
+    </div>
+
+    <script>
+        const chooseFileBtn = document.querySelector('.btn-choose-file');
+        const fileInput = document.getElementById('audio-file-input');
+        const fileStatus = document.getElementById('file-status');
+        const continueBtn = document.querySelector('.btn-primary-continue');
+
+        // Choose file click event pipeline
+        chooseFileBtn.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        // Interactive status dynamic rewrite loop changes
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files.length > 0) {
+                fileStatus.innerText = "Selected: " + fileInput.files[0].name;
+                fileStatus.style.color = "var(--primary-blue)";
+                fileStatus.style.fontWeight = "700";
+            }
+        });
+
+        // Continue trigger event handler redirect target[cite: 5]
+        continueBtn.addEventListener('click', function() {
+            window.location.href = "sixth.html";
+        });
+    </script>
+</body>
+</html>

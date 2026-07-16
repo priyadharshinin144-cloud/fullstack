@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Processing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #eef5ff 0%, #dbe9fe 50%, #eff6ff 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --primary-blue: #2563eb;
+            --light-blue: #bfdbfe;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --shadow-3d: 0 15px 35px rgba(37, 99, 235, 0.15), 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #0f172a; /* Dark presentation background to highlight the phone */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Phone Container Mockup */
+        .phone-container {
+            width: 412px;
+            height: 892px;
+            background: var(--bg-gradient);
+            border-radius: 40px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.4), inset 0 0 2px 2px rgba(255,255,255,0.2);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            border: 8px solid #1e293b;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 28px 10px 28px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            z-index: 10;
+        }
+
+        .status-icons {
+            display: flex;
+            gap: 6px;
+        }
+
+        /* Header Area */
+        .header {
+            text-align: center;
+            padding: 10px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 24px;
+            top: 14px;
+            font-size: 20px;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .back-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* 3D Robot Hero Section */
+        .hero-section {
+            position: relative;
+            height: 220px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+        }
+
+        /* Floating background assets to mimic image */
+        .floating-asset {
+            position: absolute;
+            background: white;
+            border-radius: 12px;
+            padding: 10px;
+            box-shadow: 0 8px 20px rgba(37,99,235,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-blue);
+            font-size: 18px;
+            animation: float 4s ease-in-out infinite;
+        }
+        .asset-mic { top: 30px; left: 40px; border-radius: 50%; width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; box-shadow: 0 8px 15px rgba(37,99,235,0.3);}
+        .asset-doc1 { top: 110px; left: 30px; transform: rotate(-15deg); opacity: 0.6; }
+        .asset-doc2 { top: 30px; right: 40px; transform: rotate(15deg); opacity: 0.6; }
+        .asset-chip { bottom: 40px; right: 30px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; font-weight: bold; font-size: 10px; padding: 6px 8px; border-radius: 8px; box-shadow: 0 8px 15px rgba(37,99,235,0.3);}
+
+        /* Central Robot Avatar Styled in 3D CSS */
+        .robot-avatar {
+            width: 120px;
+            height: 120px;
+            background: #fff;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08), inset -5px -5px 15px rgba(0,0,0,0.05), inset 5px 5px 15px rgba(255,255,255,0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: float 3.5s ease-in-out infinite alternate;
+        }
+
+        /* Headphones */
+        .robot-avatar::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            width: 130px;
+            height: 70px;
+            border: 8px solid #1e293b;
+            border-bottom: none;
+            border-radius: 70px 70px 0 0;
+            z-index: -1;
+        }
+
+        .headphone-ear {
+            position: absolute;
+            width: 18px;
+            height: 35px;
+            background: #2563eb;
+            border-radius: 10px;
+            top: 40px;
+            box-shadow: inset -2px 0 5px rgba(0,0,0,0.2);
+        }
+        .headphone-ear.left { left: -10px; }
+        .headphone-ear.right { right: -10px; }
+
+        .robot-eyes {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+        .eye {
+            width: 24px;
+            height: 14px;
+            background: #00e5ff;
+            border-radius: 0 0 15px 15px; /* Curved smile eyes */
+            box-shadow: 0 0 12px #00e5ff;
+            animation: blink 4s infinite;
+        }
+
+        .robot-badge {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 3px 10px;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(37,99,235,0.4);
+        }
+
+        /* Glassmorphic Progress Card Container */
+        .main-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            margin: 0 24px 16px 24px;
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: var(--shadow-3d);
+            border: 1px solid rgba(255,255,255,0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* Progress Row Blueprint */
+        .progress-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .icon-wrapper {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #eff6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-blue);
+            font-size: 16px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+
+        .progress-details {
+            flex-grow: 1;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: #f1f5f9;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
+            border-radius: 10px;
+            width: 0%; /* Dynamic control via JS */
+            transition: width 0.1s linear;
+        }
+
+        /* Done Row Specifics */
+        .icon-wrapper.done-status {
+            background: #dcfce7;
+            color: #22c55e;
+        }
+        .check-mark {
+            color: #22c55e;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* Assistant Bottom Card */
+        .assistant-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            margin: 0 24px;
+            border-radius: 24px;
+            padding: 16px 20px;
+            box-shadow: var(--shadow-3d);
+            border: 1px solid rgba(255,255,255,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .assistant-left {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .assistant-avatar {
+            width: 36px;
+            height: 36px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .assistant-text h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 4px;
+        }
+
+        .assistant-text p {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Hologram Brain */
+        .brain-container {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brain-icon {
+            font-size: 36px;
+            color: #3b82f6;
+            animation: pulse-glow 2s infinite alternate;
+            z-index: 2;
+        }
+
+        .hologram-base {
+            position: absolute;
+            bottom: 0;
+            width: 50px;
+            height: 6px;
+            background: rgba(59, 130, 246, 0.4);
+            border-radius: 50%;
+            filter: blur(2px);
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        /* Bottom Fixed Button with 3D Pop Effect */
+        .footer-action {
+            margin-top: auto;
+            padding: 24px;
+        }
+
+        .btn-processing {
+            width: 100%;
+            background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
+            border: none;
+            padding: 16px;
+            border-radius: 20px;
+            color: #2563eb;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.1), inset 0 -4px 0px rgba(29, 78, 216, 0.15);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            bottom: 0;
+        }
+
+        /* Aesthetic 3D Hover & Click interactions */
+        .btn-processing:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2), inset 0 -4px 0px rgba(29, 78, 216, 0.15);
+            background: linear-gradient(135deg, #cbdffb 0%, #a2ccfe 100%);
+        }
+
+        .btn-processing:active {
+            transform: translateY(1px);
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.15), inset 0 -1px 0px rgba(29, 78, 216, 0.15);
+        }
+
+        /* Animations Framework */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-10px); }
+        }
+
+        @keyframes blink {
+            0%, 95%, 100% { transform: scaleY(1); }
+            97% { transform: scaleY(0.1); }
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(0.95); opacity: 0.6; filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.4)); }
+            100% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.8)); }
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .fa-spin-custom {
+            animation: spin 2s linear infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-container">
+        <div class="status-bar">
+            <span>9:41</span>
+            <div class="status-icons">
+                <i class="fa-solid fa-signal"></i>
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-battery-full"></i>
+            </div>
+        </div>
+
+        <div class="header">
+            <i class="fa-solid fa-arrow-left back-btn" onclick="window.location.href='fifth.html'"></i>
+            <h1>AI Processing</h1>
+            <p>Please wait while AI analyzes your meeting...</p>
+        </div>
+
+        <div class="hero-section">
+            <div class="floating-asset asset-mic"><i class="fa-solid fa-microphone"></i></div>
+            <div class="floating-asset asset-doc1"><i class="fa-regular fa-file-lines"></i></div>
+            
+            <div class="robot-avatar">
+                <div class="headphone-ear left"></div>
+                <div class="headphone-ear right"></div>
+                <div class="robot-eyes">
+                    <div class="eye"></div>
+                    <div class="eye"></div>
+                </div>
+                <div class="robot-badge">AI</div>
+            </div>
+
+            <div class="floating-asset asset-doc2"><i class="fa-regular fa-file-lines"></i></div>
+            <div class="floating-asset asset-chip">AI</div>
+        </div>
+
+        <div class="main-card">
+            <div class="progress-row">
+                <div class="icon-wrapper"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                <div class="progress-details">
+                    <div class="progress-info">
+                        <span>Uploading...</span>
+                        <span id="val-upload">70%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="bar-upload"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-row">
+                <div class="icon-wrapper"><i class="fa-solid fa-headset"></i></div>
+                <div class="progress-details">
+                    <div class="progress-info">
+                        <span>AI Listening...</span>
+                        <span id="val-listen">45%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="bar-listen"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-row">
+                <div class="icon-wrapper"><i class="fa-solid fa-microphone-lines"></i></div>
+                <div class="progress-details">
+                    <div class="progress-info">
+                        <span>Speech to Text...</span>
+                        <span id="val-speech">25%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="bar-speech"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-row">
+                <div class="icon-wrapper"><i class="fa-regular fa-file-alt"></i></div>
+                <div class="progress-details">
+                    <div class="progress-info">
+                        <span>Generating Summary...</span>
+                        <span id="val-summary">10%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="bar-summary"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-row">
+                <div class="icon-wrapper id="done-icon-box" class="icon-wrapper"><i class="fa-solid fa-check"></i></div>
+                <div class="progress-details">
+                    <div class="progress-info">
+                        <span>Done <span class="check-mark" id="check-mark">✓</span></span>
+                        <span id="val-done">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="bar-done"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="assistant-card">
+            <div class="assistant-left">
+                <div class="assistant-avatar">🤖</div>
+                <div class="assistant-text">
+                    <h3>AI Assistant</h3>
+                    <p id="assistant-status">Analyzing your meeting...<br>Finding important decisions...<br>Creating action items...<br>Almost done...</p>
+                </div>
+            </div>
+            <div class="brain-container">
+                <i class="fa-solid fa-brain brain-icon"></i>
+                <div class="hologram-base"></div>
+            </div>
+        </div>
+
+        <div class="footer-action">
+            <button class="btn-processing" id="action-btn">
+                <i class="fa-solid fa-hourglass-half fa-spin-custom"></i>
+                <span id="btn-text">Processing...</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Target configurations spanning precisely over a 5-second session duration
+        const duration = 5000; // 5000ms = 5 seconds
+        const startValues = { upload: 70, listen: 45, speech: 25, summary: 10, done: 0 };
+        const endValues = { upload: 100, listen: 100, speech: 100, summary: 100, done: 100 };
+        
+        const startTime = performance.now();
+
+        function updateProgress(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progressRatio = Math.min(elapsed / duration, 1); // Clamp limit to max 1.0 (100%)
+
+            // Step calculations for each metric channel
+            for (const key in startValues) {
+                const currentPercent = Math.floor(startValues[key] + (endValues[key] - startValues[key]) * progressRatio);
+                
+                // Live UI DOM Node injections
+                document.getElementById(`val-${key}`).innerText = `${currentPercent}%`;
+                document.getElementById(`bar-${key}`).style.width = `${currentPercent}%`;
+            }
+
+            // Target unique contextual UI modifications mid-flight
+            if (progressRatio >= 0.8) {
+                document.getElementById('check-mark').style.display = 'inline';
+                const doneIconWrapper = document.getElementById('val-done').closest('.progress-row').querySelector('.icon-wrapper');
+                doneIconWrapper.style.backgroundColor = '#dcfce7';
+                doneIconWrapper.style.color = '#22c55e';
+            }
+
+            if (progressRatio < 1) {
+                requestAnimationFrame(updateProgress);
+            } else {
+                // Final transitions before the automated push link execution
+                document.getElementById('btn-text').innerText = "Redirecting...";
+                setTimeout(() => {
+                    window.location.href = "seventh.html";
+                }, 200);
+            }
+        }
+
+        // Initialize Animation Frame Tick Array Loop
+        requestAnimationFrame(updateProgress);
+    </script>
+</body>
+</html>
